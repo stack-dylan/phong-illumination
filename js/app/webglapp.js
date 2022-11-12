@@ -135,6 +135,7 @@ class WebGlApp
             switch(app_state.getState('Shading')) {
                 case 'Unlit':
                     this.active_shader = 0
+                    break
                 case 'Goraud':
                     this.active_shader = 1
                     break

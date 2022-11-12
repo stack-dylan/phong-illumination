@@ -83,17 +83,15 @@ class Object3D
         this.vertex_array_object = gl.createVertexArray();
         gl.bindVertexArray(this.vertex_array_object);
 
-        // unlit shader exception
-        // if (shader.getAttributeLocation('a_normal') == -1) {
-        //     shader.setArrayBuffer('a_position', this.vertices_buffer, this.num_components, 0, 0);
-        // }
         if(this.vertices.length == 24) { // cube
-            shader.setArrayBuffer('a_position', this.vertices_buffer, this.num_components, 12, 0);
+            shader.setArrayBuffer('a_position', this.vertices_buffer, this.num_components, 12 , 0);
         }
         else {
             shader.setArrayBuffer('a_position', this.vertices_buffer, this.num_components, 24, 0);
-            shader.setArrayBuffer('a_normal', this.vertices_buffer, this.num_components, 24, 12)
+            if (shader.getAttributeLocation('a_normal') >= 0)
+                shader.setArrayBuffer('a_normal', this.vertices_buffer, this.num_components, 24, 12)
         }
+
         gl.bindVertexArray( null ) // clean
     }
 
@@ -193,6 +191,12 @@ class ShadedObject3D extends Object3D {
     {
         // throw '"ShadedObject3D.render" not implemented'
         // TODO: Pass the material properties to the shader
+        this.shader.use()
+        this.shader.setUniform3f('u_material.kA', this.material.kA)
+        this.shader.setUniform3f('u_material.kD', this.material.kD)
+        this.shader.setUniform3f('u_material.kS', this.material.kS)
+        this.shader.setUniform1f('u_material.shininess', this.material.shininess)
+        this.shader.unuse()
 
         super.render( gl )
     }

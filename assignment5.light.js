@@ -108,9 +108,15 @@ class AmbientLight extends Light {
      * Call Shader.setUniform1f('u_myarray[2]', 3.0)
      */
     update( ) {
-        // throw '"AmbientLight.update" not implemented'
-        // cl(this.target_shader.setUniform4x4f())
+        // struct AmbientLight {
+        //     vec3 color;
+        //     float intensity;
+        // };
         // TODO: Pass the light properties to the shader
+        this.target_shader.use()
+        this.target_shader.setUniform3f(`u_lights_ambient[${this.id}].color`, this.color)
+        this.target_shader.setUniform1f(`u_lights_ambient[${this.id}].intensity`, this.intensity)
+        this.target_shader.unuse()
     }
 }
 
@@ -155,8 +161,25 @@ class DirectionalLight extends Light {
      * Use the light's this.model_matrix to find the direction
      */
     update( ) {
-        // throw '"AmbientLight.update" not implemented'
         // TODO: Pass the light properties to the shader
+
+        // struct DirectionalLight {
+        //     vec3 direction;
+        //     vec3 color;
+        //     float intensity;
+        // };
+        this.target_shader.use()
+
+        // get rotation matrix
+        this.rotation_matrix = mat4.fromQuat( [], mat4.getRotation([], this.model_matrix) )
+        this.direction = vec3.transformMat4([], [0, -1, 0], this.rotation_matrix)
+
+        // set uniforms
+        this.target_shader.setUniform3f(`u_lights_directional[${this.id}].direction`, this.direction)
+        this.target_shader.setUniform3f(`u_lights_directional[${this.id}].color`, this.color)
+        this.target_shader.setUniform1f(`u_lights_directional[${this.id}].intensity`, this.intensity)
+
+        this.target_shader.unuse()
     }
 }
 
@@ -201,13 +224,28 @@ class PointLight extends Light {
      * Use this light's this.model_matrix to find its position
      */
     update( ) {
-        // throw '"AmbientLight.update" not implemented'
+        // struct PointLight {
+        //     vec3 position;
+        //     vec3 color;
+        //     float intensity;
+        // };
         // TODO: Pass the light properties to the shader
+
+        this.target_shader.use()
+
+        // get position
+        this.position = mat4.getTranslation([], this.model_matrix)
+
+        this.target_shader.setUniform3f(`u_lights_point[${this.id}].position`, this.position)
+        this.target_shader.setUniform3f(`u_lights_point[${this.id}].color`, this.color)
+        this.target_shader.setUniform1f(`u_lights_point[${this.id}].intensity`, this.intensity)
+
+        this.target_shader.unuse()
     }
 }
 
 export {
-    Light,
+    Light,     
     AmbientLight,
     DirectionalLight,
     PointLight

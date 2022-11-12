@@ -174,8 +174,8 @@ class OBJLoader {
         let s = face_string.split(' ').slice(1,)
         let ret = []
         for (const st of s) {
-            let f_entry = st.split('/').map(Number)
-            ret.push(f_entry[entry_index])
+            let f_entry = st.split('/')
+            ret.push(parseInt(f_entry[entry_index]) - 1)
         }
         if (ret.length == 4) ret = this.triangulateFace(ret)
         return ret
