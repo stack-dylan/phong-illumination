@@ -6,6 +6,8 @@ import * as quat4 from './js/lib/glmatrix/quat.js'
 
 import Box from './js/app/box3d.js'
 
+let cl = console.log
+
 /**
  * The Light base class. Stores common properties of all lights like color and intensity
  * It derives from the Box class (which is an Object3D in turn). This is done to visually
@@ -106,7 +108,8 @@ class AmbientLight extends Light {
      * Call Shader.setUniform1f('u_myarray[2]', 3.0)
      */
     update( ) {
-        throw '"AmbientLight.update" not implemented'
+        // throw '"AmbientLight.update" not implemented'
+        // cl(this.target_shader.setUniform4x4f())
         // TODO: Pass the light properties to the shader
     }
 }
@@ -152,7 +155,7 @@ class DirectionalLight extends Light {
      * Use the light's this.model_matrix to find the direction
      */
     update( ) {
-        throw '"AmbientLight.update" not implemented'
+        // throw '"AmbientLight.update" not implemented'
         // TODO: Pass the light properties to the shader
     }
 }
@@ -198,7 +201,7 @@ class PointLight extends Light {
      * Use this light's this.model_matrix to find its position
      */
     update( ) {
-        throw '"AmbientLight.update" not implemented'
+        // throw '"AmbientLight.update" not implemented'
         // TODO: Pass the light properties to the shader
     }
 }

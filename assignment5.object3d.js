@@ -84,10 +84,10 @@ class Object3D
         gl.bindVertexArray(this.vertex_array_object);
 
         // unlit shader exception
-        if (shader.getAttributeLocation('a_normal') == -1) {
-            shader.setArrayBuffer('a_position', this.vertices_buffer, this.num_components, 12, 0);
-        }
-        else if(this.vertices.length == 24) { // cube
+        // if (shader.getAttributeLocation('a_normal') == -1) {
+        //     shader.setArrayBuffer('a_position', this.vertices_buffer, this.num_components, 0, 0);
+        // }
+        if(this.vertices.length == 24) { // cube
             shader.setArrayBuffer('a_position', this.vertices_buffer, this.num_components, 12, 0);
         }
         else {
@@ -191,7 +191,7 @@ class ShadedObject3D extends Object3D {
      */
     render( gl )
     {
-        throw '"ShadedObject3D.render" not implemented'
+        // throw '"ShadedObject3D.render" not implemented'
         // TODO: Pass the material properties to the shader
 
         super.render( gl )
