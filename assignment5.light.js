@@ -48,7 +48,7 @@ class Light extends Box {
      * Children can override this.
      *
      */
-    udpate( )
+    update( )
     {
         return
     }

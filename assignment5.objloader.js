@@ -3,6 +3,8 @@
 import { loadExternalFile } from './js/utils/utils.js'
 import Material from './js/app/material.js'
 
+let cl = console.log
+
 /**
  * A class to load OBJ files from disk
  */
@@ -49,7 +51,7 @@ class OBJLoader {
                     break
             }
         }
-
+        
         // Find min and max extents and normalize the vertex positions
         let max_extent = -Infinity
         let min_extent = Infinity
@@ -67,11 +69,15 @@ class OBJLoader {
         [vertex_positions, vertex_normals, position_indices] = this.resolveIndexPairs(vertex_positions, vertex_normals, position_indices, normal_indices)
 
         // Merge both vertex positions and normals into a single list
-        throw '"OBJLoader.load" not complete'
         // TODO: Combine vertex positions and normals into a single array vertex_data
         // TODO: Choose a memory layout (i.e., how you want to arrange positions and normals within the array)
         // TODO: You will be setting up the VAO in Object3D to match your layout
-        let vertex_data = null
+        let vertex_data = []
+        // vertex positions even, normals odd
+        for (let i = 0; i < vertex_positions.length; i = i + 3) {
+            vertex_data.push(...vertex_positions.slice(i, i + 3))
+            vertex_data.push(...vertex_normals.slice(i, i + 3))
+        }
 
         // Create a new placeholder material
         let material = new Material([0.2,0.2,0.2], [0.5,0.5,0.5], [0.3,0.3,0.3], 20.0)
@@ -153,9 +159,7 @@ class OBJLoader {
      * @returns {Array<Number>} A list containing the x, y, z coordinates of the entry
      */
     parseVec3(vec_string) {
-        throw '"OBJLoader.parseVec3" not implemented'
-
-        // NOTE: You can re-use A4's code here
+        return vec_string.split(' ').slice(1,).map(parseFloat)
     }
 
     /**
@@ -167,9 +171,14 @@ class OBJLoader {
      */
     parseFace(face_string, entry_index)
     {
-        throw '"OBJLoader.parseFace" not implemented'
-
-        // NOTE: You can re-use A4's code here
+        let s = face_string.split(' ').slice(1,)
+        let ret = []
+        for (const st of s) {
+            let f_entry = st.split('/').map(Number)
+            ret.push(f_entry[entry_index])
+        }
+        if (ret.length == 4) ret = this.triangulateFace(ret)
+        return ret
     }
 
     /**

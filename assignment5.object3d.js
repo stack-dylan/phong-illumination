@@ -6,6 +6,7 @@ import * as quat4 from './js/lib/glmatrix/quat.js'
 
 import Material from './js/app/material.js'
 
+let cl = console.log
 
 /**
  * @Class
@@ -82,9 +83,18 @@ class Object3D
         this.vertex_array_object = gl.createVertexArray();
         gl.bindVertexArray(this.vertex_array_object);
 
-        throw '"Object3D.createVAO" not complete'
-
-        gl.bindVertexArray( null )
+        // unlit shader exception
+        if (shader.getAttributeLocation('a_normal') == -1) {
+            shader.setArrayBuffer('a_position', this.vertices_buffer, this.num_components, 12, 0);
+        }
+        else if(this.vertices.length == 24) { // cube
+            shader.setArrayBuffer('a_position', this.vertices_buffer, this.num_components, 12, 0);
+        }
+        else {
+            shader.setArrayBuffer('a_position', this.vertices_buffer, this.num_components, 24, 0);
+            shader.setArrayBuffer('a_normal', this.vertices_buffer, this.num_components, 24, 12)
+        }
+        gl.bindVertexArray( null ) // clean
     }
 
     /**
