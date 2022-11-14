@@ -11,6 +11,8 @@ uniform mat4x4 u_p;
 
 // output to fragment stage
 // TODO: Create any needed `out` variables here
+out vec3 o_position;
+out vec3 o_normal;
 
 void main() {
 
@@ -19,5 +21,6 @@ void main() {
     // TODO: Transform positions and normals
     // NOTE: Normals are transformed differently from positions. Check the book and resources.
     // TODO: Create new `out` variables above outside of main() to store any results
-
+    o_position = a_position;
+    o_normal = a_normal;
 }
