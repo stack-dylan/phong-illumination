@@ -11,8 +11,11 @@ uniform mat4x4 u_p;
 
 // output to fragment stage
 // TODO: Create any needed `out` variables here
-out vec3 o_position;
-out vec3 o_normal;
+out vec3 position;
+out vec3 normal;
+out mat4x4 m;
+out mat4x4 v;
+out mat4x4 p;
 
 void main() {
 
@@ -21,6 +24,11 @@ void main() {
     // TODO: Transform positions and normals
     // NOTE: Normals are transformed differently from positions. Check the book and resources.
     // TODO: Create new `out` variables above outside of main() to store any results
-    o_position = a_position;
-    o_normal = a_normal;
+    gl_PointSize = 2.0f;
+    position = a_position;
+    normal = a_normal;
+    m = u_m;
+    v = u_v;
+    p = u_p;
+    gl_Position = u_p * u_v * u_m * vec4(a_position, 1.0);
 }

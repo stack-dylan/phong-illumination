@@ -58,18 +58,14 @@ vec3 shadeAmbientLight(Material material, AmbientLight light) {
 
 // Shades a directional light and returns its contribution
 vec3 shadeDirectionalLight(Material material, DirectionalLight light, vec3 normal, vec3 eye, vec3 vertex_position) {
-    // tweak intensity according to inverse square law
-    // float light_distance = distance(vertex_position, light.position);
-    // float light_intensity = 1.0 / pow(light_distance, 2.0) * light.intensity;
-    float light_intensity = light.intensity;
     vec3 light_direction = -normalize(light.direction);
     float lambertian = max(dot(normal, light_direction), 0.0);
-    vec3 Id = vec3(material.kD * (light.color * light_intensity) * lambertian);
+    vec3 Id = vec3(material.kD * (light.color * light.intensity) * lambertian);
 
     vec3 light_reflection = reflect(-light_direction, normal);
     vec3 view = normalize(eye - vertex_position);
     float specularCoef = pow(max(dot(light_reflection, view), 0.0), material.shininess);
-    vec3 Is = (light.color * light_intensity) * material.kS * specularCoef;
+    vec3 Is = (light.color * light.intensity) * material.kS * specularCoef;
     return (Id + Is);
 }
 
@@ -100,17 +96,16 @@ void main() {
     // TODO: Transform positions and normals [into eye space]
     // NOTE: Normals are transformed differently from positions. Check the book and resources.
     gl_PointSize = 2.0f;
-    mat4x4 mvMatrix = u_m * u_v;
     vec3 world_vertex = vec3(u_m * vec4(a_position, 1.0)); // transform vertex
     vec3 world_normal = normalize(vec3(transpose(inverse(u_m)) * vec4(a_normal, 1.0))); // transform normal
 
     // TODO: Use the above methods to shade every light in the light arrays
     vec3 total = vec3(0, 0, 0);
     for (int i = 0; i < MAX_LIGHTS; i++) {
-        vec3 am = shadeAmbientLight(u_material, u_lights_ambient[i]);
-        vec3 di = shadeDirectionalLight(u_material, u_lights_directional[i], world_normal, u_eye, world_vertex);
-        vec3 po = shadePointLight(u_material, u_lights_point[i], world_normal, u_eye,world_vertex);
-        total += am + di + po;
+        vec3 amb = shadeAmbientLight(u_material, u_lights_ambient[i]);
+        vec3 dir = shadeDirectionalLight(u_material, u_lights_directional[i], world_normal, u_eye, world_vertex);
+        vec3 pnt = shadePointLight(u_material, u_lights_point[i], world_normal, u_eye,world_vertex);
+        total += amb + dir + pnt;
     }
     // TODO: Accumulate their contribution and use this total light contribution to pass to o_color
 
